@@ -1,0 +1,498 @@
+CREATE TABLE toto (id int(11)
+,type VARCHAR(255)                     
+,facilities VARCHAR(255)            
+,image longblob         
+,hotelid varchar(255)
+, price int(11)
+,status VARCHAR(255)
+,count int(11)
+,tt VARCHAR(50)
+,location VARCHAR(10)
+,stars int      
+,suspended int		
+,approved int
+,rating int		
+,owner_id int  
+ );
+INSERT INTO toto (id,type,facilities,image,hotelid,price,status,count,tt,location,stars,suspended,approved,rating,owner_id)
+SELECT * FROM rooms INNER JOIN hotels ON hotels.name=rooms.hotelId;
+ALTER TABLE toto drop tt;
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+      <title>ROOMS</title>
+</head>
+<body  background="bg.jpg">
+      <br>
+<table  width="900" border="5"  cellpadding="5"  cellspacing="2" align="center">
+
+
+<tr>
+
+<th>Number</th>
+<th>Type</th>
+<th>Facilities</th>
+<th>Image</th>
+<th>Hotel</th>
+<th>Price</th>
+<th>status</th>
+
+</tr>
+
+
+<?php 
+
+//connect to db
+$mysqli= NEW MySQLI('localhost','root','','booking');
+
+//Query
+$resultSet = $mysqli->query("SELECT * FROM rooms");
+
+
+//Query
+// $resultSet1=$mysqli->query("SELECT * FROM hotels where  approved =1 ");
+// while($hotel=mysql_fetch_assoc($resultSet1)){
+
+// $result=$hotel['name'];
+
+// while($row=mysql_fetch_assoc($resultSet1)){
+
+// $resultSet = $mysqli->query("SELECT * FROM rooms where hotelId='$result'");
+
+if($resultSet->num_rows !=0){
+
+//results to array
+      while($rows = $resultSet->fetch_assoc())
+//while($rows = mysqli_fetch_field($result))
+      {
+       $roomNumber=$rows['id'];
+       $roomType=$rows['type'];
+       $roomFacilities=$rows['facilites'];
+       $roomImage=$rows['image'];
+       $Hotel=$rows['hotelId'];
+       $roomPrice=$rows['price'];
+       $status=$rows['status'];
+
+
+//$result = $_GET['image'];
+//echo '< img src="images/gallery/'.$result.'">';
+
+echo "<tr>";
+echo "<td>" . $rows['id'] . "</td>";
+echo "<td>" . $rows['type']. "</td>";
+echo "<td>" . $rows['facilites'] . "</td>";
+echo "<td>" . $roomImage . "</td>";
+echo "<td>" . $rows['hotelId'] . "</td>";
+echo "<td>" . $rows['price'] . "</td>";
+echo "<td>" . $rows['status'] . "</td>";
+echo "</tr>";
+
+      // echo "<p>Name:$hotelName Location: $hotelLocation stars:$stars suspend: $suspend rating: $rating Owner: $owner_id   ";
+
+      }
+
+}
+
+ ?>
+ 
+ 
+ </table>
+ <br>
+
+<form method="POST" action="customerPage.php">
+
+            <div class="input-group" align="center">
+                  <label>roomno</label>
+                  <input type="int" name="roomno" >
+            </div>
+            
+            <div class="input-group"  align="center">
+                  <button type="submit" class="btn" name="reserve">reserve</button>
+            </div>
+</form>
+            <?php
+
+       session_start(); 
+
+      $db = mysqli_connect('localhost', 'root', '', 'booking');
+
+      if (isset($_POST['reserve'])) {
+          $hotelId=$rows['name'];
+        echo($hotelId);
+        $roomno=$_POST['roomno'];
+        echo($roomno);
+          echo("asdaf");
+
+
+      $query = "UPDATE rooms
+   SET status=1 ,count= '$roomsAvailable-1'
+    WHERE name='$hotelId' && status=0 && id='$roomno'";
+
+                  mysqli_query($db, $query);
+                 header('location: customerPage.php');
+
+}
+
+
+
+   ?>
+</body>
+</html>
+
+
+
+
+
+<?php
+   ob_start();
+   session_start();
+?>
+
+<?
+   // error_reporting(E_ALL);
+   // ini_set("display_errors", 1);
+?>
+
+<html lang = "en">
+   
+   <head>
+      <title>Tutorialspoint.com</title>
+      <link href = "css/bootstrap.min.css" rel = "stylesheet">
+      
+      <style>
+         body {
+            padding-top: 40px;
+            padding-bottom: 40px;
+            background-color: #ADABAB;
+         }
+         
+         .form-signin {
+            max-width: 330px;
+            padding: 15px;
+            margin: 0 auto;
+            color: #017572;
+         }
+         
+         .form-signin .form-signin-heading,
+         .form-signin .checkbox {
+            margin-bottom: 10px;
+         }
+         
+         .form-signin .checkbox {
+            font-weight: normal;
+         }
+         
+         .form-signin .form-control {
+            position: relative;
+            height: auto;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            padding: 10px;
+            font-size: 16px;
+         }
+         
+         .form-signin .form-control:focus {
+            z-index: 2;
+         }
+         
+         .form-signin input[type="email"] {
+            margin-bottom: -1px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
+            border-color:#017572;
+         }
+         
+         .form-signin input[type="password"] {
+            margin-bottom: 10px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            border-color:#017572;
+         }
+         
+         h2{
+            text-align: center;
+            color: #017572;
+         }
+      </style>
+      
+   </head>
+      
+   <body>
+      
+      <h2>Booking Room WebSite </h2> 
+      <div class = "container form-signin">
+         
+         <?php
+            $msg = '';
+            
+            if (isset($_POST['reserve'])   ) {
+                        
+             echo 'hey i want to reserve room number'.$_POST['roomNumber'];
+
+            }
+         ?>
+      </div> <!-- /container -->
+      
+      <div class = "container">
+      
+         <form class = "form-signin" role = "form" 
+            action = "<?php echo htmlspecialchars($_SERVER['PHP_SELF']); 
+            ?>" method = "post">
+        <label> RoomNumber</label> <br>
+            <input type = "int" class = "form-control" 
+               name ="roomNumber" placeholder = "roomNumber" 
+               required autofocus></br>
+            
+            <button class = "btn btn-lg btn-primary btn-block" type = "submit" 
+               name = "reserve">reserve</button>
+         </form>
+                  
+ 
+         
+      </div> 
+      
+   </body>
+</html>
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+      <title>ROOMS</title>
+</head>
+<body>
+      <br>
+<table  width="900" border="5"  cellpadding="5"  cellspacing="2" align="center">
+
+
+<tr>
+
+<th>Number</th>
+<th>Type</th>
+<th>Facilities</th>
+<th>Image</th>
+<th>Hotel</th>
+<th>Price</th>
+<th>status</th>
+
+</tr>
+
+
+<?php 
+
+//connect to db
+$mysqli= NEW MySQLI('localhost','root','','booking');
+
+//Query
+$resultSet = $mysqli->query("SELECT * FROM rooms");
+
+
+//Query
+// $resultSet1=$mysqli->query("SELECT * FROM hotels where  approved =1 ");
+// while($hotel=mysql_fetch_assoc($resultSet1)){
+
+// $result=$hotel['name'];
+
+// while($row=mysql_fetch_assoc($resultSet1)){
+
+// $resultSet = $mysqli->query("SELECT * FROM rooms where hotelId='$result'");
+
+if($resultSet->num_rows !=0){
+
+//results to array
+      while($rows = $resultSet->fetch_assoc())
+//while($rows = mysqli_fetch_field($result))
+      {
+       $roomNumber=$rows['id'];
+       $roomType=$rows['type'];
+       $roomFacilities=$rows['facilites'];
+       $roomImage=$rows['image'];
+       $Hotel=$rows['hotelId'];
+       $roomPrice=$rows['price'];
+       $status=$rows['status'];
+
+
+//$result = $_GET['image'];
+//echo '< img src="images/gallery/'.$result.'">';
+
+echo "<tr>";
+echo "<td>" . $rows['id'] . "</td>";
+echo "<td>" . $rows['type']. "</td>";
+echo "<td>" . $rows['facilites'] . "</td>";
+echo "<td>" . $roomImage . "</td>";
+echo "<td>" . $rows['hotelId'] . "</td>";
+echo "<td>" . $rows['price'] . "</td>";
+echo "<td>" . $rows['status'] . "</td>";
+echo "</tr>";
+
+      // echo "<p>Name:$hotelName Location: $hotelLocation stars:$stars suspend: $suspend rating: $rating Owner: $owner_id   ";
+
+      }
+
+}
+
+ ?>
+ 
+ 
+ </table>
+ <br>
+
+<form method="POST" action="customerPage.php">
+
+            <div class="input-group" align="center">
+                  <label>roomno</label>
+                  <input type="int" name="roomno" >
+            </div>
+            
+            <div class="input-group"  align="center">
+                  <button class = "btn btn-lg btn-primary btn-block" type = "submit" class="btn" name="reserve">reserve</button>
+            </div>
+              </form>
+
+<br>
+<br>
+              <!-- <form method="POST" action="customerPage.php">
+
+            <div class="input-group" align="center">
+                  <label>Search</label>
+                  <input type="text" name="search" >
+            </div>
+            
+            <div class="input-group"  align="center">
+                  <button type="submit" class="btn" name="search">Search</button>
+            </div>
+              </form>
+              <br> -->
+
+
+<link rel="stylesheet" type="text/css" href="style.css">
+<title>search</title>
+<form method="post" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); 
+            ?>">
+  <div class="container">
+ 
+<div class="input-group">
+    
+  
+  <label for="type"><b>type</b></label>
+    <input type="text" placeholder="Enter type  of the rooms" id="type" name="type" >
+  
+    <label for="price"><b>price</b></label>
+    <input type="text" placeholder="Enter price" id="price" name="price" >
+  
+  <label for="location"><b>location</b></label>
+    <input type="text" placeholder="Enter location" id="location" name="location" >
+  
+  <label for="stars"><b>stars</b></label>
+    <input type="int" placeholder="Enter stars" id="stars" name="stars" >
+  
+  <label for="rating"><b>rating</b></label>
+    <input type="int" placeholder="Enter stars" id="rating" name="rating" >
+  
+  <input name="search"  class = "btn btn-lg btn-primary btn-block" type = "submit" >
+  </div>
+  <!-- <p> <a href="memindex.php?logout='1'" style="color: red;">logout</a> </p> -->
+
+</form>
+
+           <?php
+
+       session_start(); 
+      $db = mysqli_connect('localhost', 'root', '', 'booking');
+
+if(isset($_post['search'])){
+
+$sql1 ="CREATE TABLE test (id int(11)
+,type VARCHAR(255)                     
+,facilities VARCHAR(255)            
+,image longblob         
+,hotelid varchar(255)
+, price int(11)
+,status VARCHAR(255)
+,count int(11)
+,tt VARCHAR(50)
+,location VARCHAR(10)
+,stars int      
+,suspended int    
+,approved int
+,rating int   
+,owner_id int  
+ );";
+    mysqli_query($db,$sql1); 
+
+echo ("sup");
+
+
+
+  $rating = mysqli_real_escape_string($db, $_POST['rating']);
+  $type = mysqli_real_escape_string($db, $_POST['type']);
+  $price = mysqli_real_escape_string($db, $_POST['price']);
+  $location = mysqli_real_escape_string($db, $_POST['location']);
+  $stars = mysqli_real_escape_string($db, $_POST['stars']);
+   $sqol="drop table test";
+   mysqli_query($db,$sqol); 
+  
+
+$sql1 ="INSERT INTO test (id,type,facilities,image,hotelid,price,status,count,tt,location,stars,suspended,approved,rating,owner_id)
+SELECT * FROM rooms INNER JOIN hotels ON hotels.name=rooms.hotelId;
+";
+mysqli_query($db,$sql1);
+$sql2 = "ALTER TABLE test drop tt;";
+mysqli_query($db,$sql2);
+
+  if (!empty($rating)){
+    $query_select = mysqli_query($db,"delete from test where rating<>$rating or rating is null");
+    
+  }
+  if (!empty($location)){
+    $query_select = mysqli_query($db,"delete from test where location<>'$location'");
+  }
+  if (!empty($stars)){
+    $query_select = mysqli_query($db,"delete from test where stars<>'$stars'");
+  }
+  if (!empty($price)){
+    $query_select = mysqli_query($db,"delete from test where price<>'$price'");
+  }
+  if (!empty($type)){
+    $query_select = mysqli_query($db,"delete from test where type<>'$type'");
+  }
+
+      if (isset($_POST['reserve'])) {
+          $hotelId=$rows['name'];
+        echo($hotelId);
+        $roomno=$_POST['roomno'];
+        echo($roomno);
+          echo("asdaf");
+
+
+      $query = "UPDATE rooms
+   SET status=1 ,count= '$roomsAvailable-1'
+    WHERE name='$hotelId' && status=0 && id='$roomno'";
+
+                  mysqli_query($db, $query);
+                 header('location: customerPage.php');
+
+}
+
+}
+
+   ?>
+
+
+</body>
+</html>
+
+
+
